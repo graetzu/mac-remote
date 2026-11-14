@@ -1,0 +1,7 @@
+node_modules/
+*.log
+.DS_Store
+
+# kompilierte Binaries (werden lokal gebaut)
+bin/scrollhelper
+MacRemoteApp/MacRemote.app/Contents/MacOS/MacRemote

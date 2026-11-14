@@ -1,0 +1,174 @@
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  margin: 0;
+  padding: 16px;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  background: #111;
+  color: #eee;
+  font-family: -apple-system, system-ui, sans-serif;
+  touch-action: manipulation;
+}
+.status {
+  text-align: center;
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 12px;
+}
+.status.ok { color: #3ddc84; }
+.status.err { color: #ff5c5c; }
+
+.frontApp {
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ddd;
+  margin-bottom: 14px;
+}
+.frontApp::before {
+  content: "▸ ";
+  color: #0a84ff;
+}
+
+.volumeRow {
+  align-items: center;
+}
+.volumeRow span { font-size: 18px; }
+.volumeRow input[type="range"] {
+  flex: 6;
+  background: transparent;
+  padding: 0;
+  min-height: auto;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.tabs .tab {
+  flex: 1;
+  background: #1c1c1e;
+  color: #999;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 6px;
+  font-size: 15px;
+  min-height: 44px;
+}
+.tabs .tab.active {
+  background: #0a84ff;
+  color: #fff;
+}
+.panel { display: none; }
+.panel.active { display: block; }
+
+.screenLabel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: #999;
+}
+
+.card {
+  background: #1c1c1e;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+.card h2 {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #999;
+  margin: 0 0 10px;
+}
+.row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.row.wrap { flex-wrap: wrap; }
+button, select {
+  flex: 1;
+  background: #2c2c2e;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 10px;
+  font-size: 16px;
+  min-height: 48px;
+}
+button:active { background: #3a3a3c; }
+button.big { font-size: 28px; flex: 1.5; }
+textarea {
+  width: 100%;
+  background: #2c2c2e;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+.appList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+.appRow {
+  display: flex;
+  gap: 8px;
+}
+.appRow .appName {
+  flex: 1;
+  text-align: left;
+  min-height: 44px;
+}
+.appRow .appQuit {
+  flex: 0 0 48px;
+  background: #4a2020;
+  color: #ff8a8a;
+}
+
+.dpad {
+  display: grid;
+  grid-template-columns: 60px 60px 60px;
+  grid-template-rows: 54px 54px 54px;
+  justify-content: center;
+  gap: 8px;
+  margin: 16px auto 4px;
+}
+.dpad button {
+  flex: none;
+  min-height: 0;
+  padding: 0;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dpad-up { grid-column: 2; grid-row: 1; }
+.dpad-left { grid-column: 1; grid-row: 2; }
+.dpad-ok { grid-column: 2; grid-row: 2; background: #0a84ff; font-size: 14px; font-weight: 600; }
+.dpad-right { grid-column: 3; grid-row: 2; }
+.dpad-down { grid-column: 2; grid-row: 3; }
+
+.trackpad {
+  width: 100%;
+  height: calc(100vh - 420px);
+  min-height: 220px;
+  background: #2c2c2e;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #777;
+  font-size: 14px;
+  margin-bottom: 10px;
+  user-select: none;
+  touch-action: none;
+}

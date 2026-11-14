@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<title>Mac Remote</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="status" class="status">verbinde…</div>
+  <div id="frontApp" class="frontApp">–</div>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="media">Medien</button>
+    <button class="tab" data-tab="trackpad">Trackpad</button>
+    <button class="tab" data-tab="input">Eingabe</button>
+    <button class="tab" data-tab="apps">Apps</button>
+  </nav>
+
+  <section id="tab-media" class="panel active">
+    <div class="card">
+      <h2>Wiedergabe</h2>
+      <div class="row">
+        <button id="seekBack">⏪ 10s</button>
+        <button id="playPause" class="big">⏯︎</button>
+        <button id="seekFwd">10s ⏩</button>
+      </div>
+      <div class="row volumeRow">
+        <span>🔉</span>
+        <input type="range" id="volumeSlider" min="0" max="100" value="50" />
+        <span>🔊</span>
+      </div>
+      <div class="row">
+        <button id="mute">🔇 Mute</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Shortcuts</h2>
+      <div class="row">
+        <label class="screenLabel">Bildschirm
+          <select id="screenSelect"></select>
+        </label>
+      </div>
+      <div class="row wrap">
+        <button data-app="Stremio">Stremio</button>
+        <button data-url="https://youtube.com">YouTube</button>
+        <button data-url="https://twitch.tv">Twitch</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="tab-trackpad" class="panel">
+    <div id="trackpad" class="trackpad">1 Finger: bewegen/klicken · halten+ziehen: Drag · 2 Finger: scrollen/rechtsklick</div>
+    <div class="row">
+      <button id="leftClick">Links-Klick</button>
+      <button id="rightClick">Rechts-Klick</button>
+    </div>
+    <div class="dpad">
+      <button class="dpad-up" data-key="126">▲</button>
+      <button class="dpad-left" data-key="123">◀</button>
+      <button class="dpad-ok" data-key="36">OK</button>
+      <button class="dpad-right" data-key="124">▶</button>
+      <button class="dpad-down" data-key="125">▼</button>
+    </div>
+  </section>
+
+  <section id="tab-input" class="panel">
+    <div class="card">
+      <h2>Text eingeben</h2>
+      <textarea id="textInput" rows="4" placeholder="Text an aktives Feld senden…"></textarea>
+      <div class="row">
+        <button id="sendText">Senden</button>
+        <button id="sendTextEnter">Senden + Enter</button>
+      </div>
+      <div class="row wrap">
+        <button data-key="48">⇥ Tab</button>
+        <button data-key="53">Esc</button>
+        <button data-key="51">⌫ Entf</button>
+        <button data-key="36">⏎ Enter</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="tab-apps" class="panel">
+    <div class="card">
+      <h2>Laufende Apps</h2>
+      <div id="appList" class="appList">lädt…</div>
+    </div>
+
+    <div class="card">
+      <h2>System</h2>
+      <div class="row wrap">
+        <button id="sysSleep">💤 Schlaf</button>
+        <button id="sysRestart">🔄 Neustart</button>
+        <button id="sysShutdown">⏻ Herunterfahren</button>
+        <button id="sysLogout">🚪 Abmelden</button>
+      </div>
+    </div>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
