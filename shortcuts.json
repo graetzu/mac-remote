@@ -1,0 +1,20 @@
+[
+  {
+    "id": "stremio",
+    "label": "Stremio",
+    "type": "app",
+    "value": "Stremio"
+  },
+  {
+    "id": "youtube",
+    "label": "YouTube",
+    "type": "url",
+    "value": "https://youtube.com"
+  },
+  {
+    "id": "twitch",
+    "label": "Twitch",
+    "type": "url",
+    "value": "https://twitch.tv"
+  }
+]

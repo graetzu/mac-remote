@@ -3,9 +3,23 @@ const { WebSocketServer } = require("ws");
 const { execFile } = require("child_process");
 const path = require("path");
 const os = require("os");
+const fs = require("fs");
 
 const PORT = process.env.PORT || 8765;
 const SCRIPTS = path.join(__dirname, "scripts");
+const SHORTCUTS_FILE = path.join(__dirname, "shortcuts.json");
+
+function loadShortcuts() {
+  try {
+    return JSON.parse(fs.readFileSync(SHORTCUTS_FILE, "utf8"));
+  } catch {
+    return [];
+  }
+}
+
+function saveShortcuts(list) {
+  fs.writeFileSync(SHORTCUTS_FILE, JSON.stringify(list, null, 2));
+}
 
 function jxa(scriptName, args = []) {
   return new Promise((resolve, reject) => {
@@ -83,7 +97,30 @@ function localIps() {
 }
 
 const app = express();
+app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
+
+app.get("/api/shortcuts", (req, res) => {
+  res.json(loadShortcuts());
+});
+
+app.put("/api/shortcuts", (req, res) => {
+  if (!Array.isArray(req.body)) {
+    return res.status(400).json({ error: "Erwarte ein Array" });
+  }
+  const valid = req.body.every(
+    (s) =>
+      s &&
+      typeof s.label === "string" &&
+      (s.type === "app" || s.type === "url") &&
+      typeof s.value === "string"
+  );
+  if (!valid) {
+    return res.status(400).json({ error: "Ungültiges Shortcut-Format" });
+  }
+  saveShortcuts(req.body);
+  res.json({ ok: true });
+});
 
 app.get("/api/screens", async (req, res) => {
   try {

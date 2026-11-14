@@ -38,16 +38,26 @@
     </div>
 
     <div class="card">
-      <h2>Shortcuts</h2>
+      <div class="row cardHeader">
+        <h2>Shortcuts</h2>
+        <button id="editShortcuts" class="editToggle">✎ Bearbeiten</button>
+      </div>
       <div class="row">
         <label class="screenLabel">Bildschirm
           <select id="screenSelect"></select>
         </label>
       </div>
-      <div class="row wrap">
-        <button data-app="Stremio">Stremio</button>
-        <button data-url="https://youtube.com">YouTube</button>
-        <button data-url="https://twitch.tv">Twitch</button>
+      <div id="shortcutButtons" class="row wrap"></div>
+
+      <div id="shortcutEditor" class="shortcutEditor hidden">
+        <div id="shortcutRows"></div>
+        <div class="row">
+          <button id="addShortcutRow">+ Shortcut hinzufügen</button>
+        </div>
+        <div class="row">
+          <button id="saveShortcuts" class="primary">Speichern</button>
+          <button id="cancelShortcuts">Abbrechen</button>
+        </div>
       </div>
     </div>
   </section>

@@ -97,18 +97,110 @@ fetch("/api/screens")
   });
 
 // Shortcuts
-document.querySelectorAll("[data-app]").forEach((btn) => {
-  btn.onclick = () => send({ type: "openApp", name: btn.dataset.app });
-});
-document.querySelectorAll("[data-url]").forEach((btn) => {
-  btn.onclick = () =>
-    send({
-      type: "openUrl",
-      url: btn.dataset.url,
-      screen: parseInt(screenSelect.value || "0", 10),
-      fullscreen: true,
+const shortcutButtonsEl = document.getElementById("shortcutButtons");
+const shortcutEditorEl = document.getElementById("shortcutEditor");
+const shortcutRowsEl = document.getElementById("shortcutRows");
+const editShortcutsBtn = document.getElementById("editShortcuts");
+let currentShortcuts = [];
+
+function renderShortcutButtons() {
+  shortcutButtonsEl.innerHTML = "";
+  currentShortcuts.forEach((s) => {
+    const btn = document.createElement("button");
+    btn.textContent = s.label;
+    btn.onclick = () => {
+      if (s.type === "app") {
+        send({ type: "openApp", name: s.value });
+      } else {
+        send({
+          type: "openUrl",
+          url: s.value,
+          screen: parseInt(screenSelect.value || "0", 10),
+          fullscreen: true,
+        });
+      }
+    };
+    shortcutButtonsEl.appendChild(btn);
+  });
+}
+
+function renderShortcutRows() {
+  shortcutRowsEl.innerHTML = "";
+  currentShortcuts.forEach((s, i) => {
+    const row = document.createElement("div");
+    row.className = "shortcutRow";
+    row.innerHTML = `
+      <input type="text" class="scLabel" placeholder="Name" value="${escapeAttr(s.label)}">
+      <select class="scType">
+        <option value="app"${s.type === "app" ? " selected" : ""}>App</option>
+        <option value="url"${s.type === "url" ? " selected" : ""}>Website</option>
+      </select>
+      <input type="text" class="scValue" placeholder="App-Name oder URL" value="${escapeAttr(s.value)}">
+      <button class="scRemove">✕</button>
+    `;
+    row.querySelector(".scLabel").oninput = (e) => (s.label = e.target.value);
+    row.querySelector(".scType").onchange = (e) => (s.type = e.target.value);
+    row.querySelector(".scValue").oninput = (e) => (s.value = e.target.value);
+    row.querySelector(".scRemove").onclick = () => {
+      currentShortcuts = currentShortcuts.filter((x) => x !== s);
+      renderShortcutRows();
+    };
+    shortcutRowsEl.appendChild(row);
+  });
+}
+
+function escapeAttr(str) {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML.replace(/"/g, "&quot;");
+}
+
+function loadShortcuts() {
+  fetch("/api/shortcuts")
+    .then((r) => r.json())
+    .then((list) => {
+      currentShortcuts = list;
+      renderShortcutButtons();
+    })
+    .catch(() => {
+      shortcutButtonsEl.textContent = "Fehler beim Laden";
     });
-});
+}
+loadShortcuts();
+
+editShortcutsBtn.onclick = () => {
+  renderShortcutRows();
+  shortcutButtonsEl.classList.add("hidden");
+  shortcutEditorEl.classList.remove("hidden");
+};
+
+document.getElementById("addShortcutRow").onclick = () => {
+  currentShortcuts.push({ id: `sc${Date.now()}`, label: "", type: "app", value: "" });
+  renderShortcutRows();
+};
+
+document.getElementById("cancelShortcuts").onclick = () => {
+  shortcutEditorEl.classList.add("hidden");
+  shortcutButtonsEl.classList.remove("hidden");
+  loadShortcuts();
+};
+
+document.getElementById("saveShortcuts").onclick = () => {
+  const cleaned = currentShortcuts.filter((s) => s.label.trim() && s.value.trim());
+  fetch("/api/shortcuts", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(cleaned),
+  })
+    .then((r) => r.json())
+    .then(() => {
+      currentShortcuts = cleaned;
+      renderShortcutButtons();
+      shortcutEditorEl.classList.add("hidden");
+      shortcutButtonsEl.classList.remove("hidden");
+    })
+    .catch(() => alert("Speichern fehlgeschlagen"));
+};
 
 // Texteingabe
 document.getElementById("sendText").onclick = () => {
