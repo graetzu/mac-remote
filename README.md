@@ -14,11 +14,14 @@ steuert ihn per AppleScript/JXA (Medien, Lautstärke, Apps, System) und `cliclic
 - **Eingabe**: Text ans aktive Textfeld senden, inkl. Tab/Esc/Enter/Entf
 - **Apps**: laufende Programme auflisten, fokussieren oder beenden
 - **System**: Schlaf, Neustart, Herunterfahren, Abmelden (mit Sicherheitsabfrage)
+- **Jetzt läuft**: Titel/Interpret des aktuell laufenden Mediums (beliebige App/Website mit
+  Now-Playing-Integration) plus Scrubber zum Spulen
 - **Mac Remote.app**: Menüleisten-App zum Starten/Stoppen des Servers
 
 ## Voraussetzungen
 
 - Node.js
+- [`nowplaying-cli`](https://github.com/kirtan-shah/nowplaying-cli) (`brew install nowplaying-cli`)
 - [`cliclick`](https://github.com/BlueM/cliclick) (`brew install cliclick`)
 - macOS-Berechtigungen: Der Prozess, der `osascript`/`cliclick` ausführt (i. d. R. Terminal
   oder MacRemote.app), braucht **Bedienungshilfen**-Zugriff unter
@@ -51,3 +54,12 @@ open /Applications/MacRemote.app
 Native CGEvent-Scroll-Events werden auf aktuellen macOS-Versionen teils ignoriert. Der
 Server simuliert 2-Finger-Scrollgesten deshalb über gebündelte Pfeiltasten-Presses
 (`scripts/scrollKeys.js`) statt über direkte Scroll-Wheel-Events.
+
+## Hinweis zu „Jetzt läuft"
+
+Titel, Dauer und Play/Pause-Status kommen zuverlässig über macOS' systemweite
+Now-Playing-Schnittstelle. Seeken (`seek`) funktioniert ebenfalls zuverlässig als
+Absolut-Position. Die laufende Positionsanzeige wird clientseitig interpoliert und
+mit jedem Poll (alle 2s) korrigiert – bei Quellen, die selbst keine kontinuierlichen
+Positions-Updates melden (z. B. YouTube im Browser), bleibt die Anzeige zwischen den
+Korrekturen entsprechend stehen, statt flüssig zu laufen.

@@ -68,6 +68,71 @@ function pollVolume() {
 setInterval(pollVolume, 2000);
 pollVolume();
 
+// Jetzt läuft / Scrubber
+const npInfoEl = document.getElementById("npInfo");
+const npSeekEl = document.getElementById("npSeek");
+const npElapsedEl = document.getElementById("npElapsed");
+const npDurationEl = document.getElementById("npDuration");
+let npDuration = 0;
+let npElapsedAtFetch = 0;
+let npRate = 0;
+let npFetchedAt = 0;
+let npSeeking = false;
+
+function formatTime(sec) {
+  if (!isFinite(sec) || sec < 0) sec = 0;
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60);
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
+
+function pollNowPlaying() {
+  fetch("/api/nowplaying")
+    .then((r) => r.json())
+    .then((info) => {
+      if (!info.title) {
+        npInfoEl.textContent = "nichts spielt gerade";
+        npSeekEl.disabled = true;
+        npDuration = 0;
+        npRate = 0;
+        npElapsedEl.textContent = "–:–";
+        npDurationEl.textContent = "–:–";
+        return;
+      }
+      npInfoEl.textContent = info.artist ? `${info.title} — ${info.artist}` : info.title;
+      npDuration = info.duration || 0;
+      npElapsedAtFetch = info.elapsedTime || 0;
+      npRate = info.playbackRate || 0;
+      npFetchedAt = Date.now();
+      npSeekEl.disabled = npDuration <= 0;
+      npSeekEl.max = String(Math.max(1, Math.round(npDuration)));
+      npDurationEl.textContent = formatTime(npDuration);
+    })
+    .catch(() => {});
+}
+setInterval(pollNowPlaying, 2000);
+pollNowPlaying();
+
+function tickNowPlaying() {
+  if (npSeeking || npDuration <= 0) return;
+  const elapsed = npElapsedAtFetch + ((Date.now() - npFetchedAt) / 1000) * npRate;
+  const clamped = Math.min(npDuration, Math.max(0, elapsed));
+  npSeekEl.value = String(Math.round(clamped));
+  npElapsedEl.textContent = formatTime(clamped);
+}
+setInterval(tickNowPlaying, 500);
+
+npSeekEl.addEventListener("input", () => {
+  npSeeking = true;
+  npElapsedEl.textContent = formatTime(parseInt(npSeekEl.value, 10));
+});
+npSeekEl.addEventListener("change", () => {
+  send({ type: "seek", position: parseInt(npSeekEl.value, 10) });
+  npElapsedAtFetch = parseInt(npSeekEl.value, 10);
+  npFetchedAt = Date.now();
+  setTimeout(() => (npSeeking = false), 800);
+});
+
 // Fokus-App-Anzeige
 const frontAppEl = document.getElementById("frontApp");
 function pollFrontmost() {

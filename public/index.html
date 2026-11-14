@@ -21,6 +21,16 @@
 
   <section id="tab-media" class="panel active">
     <div class="card">
+      <h2>Jetzt läuft</h2>
+      <div id="npInfo" class="npInfo">nichts spielt gerade</div>
+      <div class="row npSeekRow">
+        <span id="npElapsed" class="npTime">–:–</span>
+        <input type="range" id="npSeek" min="0" max="100" value="0" disabled />
+        <span id="npDuration" class="npTime">–:–</span>
+      </div>
+    </div>
+
+    <div class="card">
       <h2>Wiedergabe</h2>
       <div class="row">
         <button id="seekBack">⏪ 10s</button>

@@ -57,6 +57,35 @@ function osaInline(script) {
   });
 }
 
+const NOWPLAYING_CLI = "/opt/homebrew/bin/nowplaying-cli";
+
+function nowPlaying() {
+  return new Promise((resolve) => {
+    execFile(
+      NOWPLAYING_CLI,
+      ["get", "--json", "title", "artist", "duration", "elapsedTime", "playbackRate"],
+      (err, stdout) => {
+        if (err) return resolve({});
+        try {
+          const info = JSON.parse(stdout);
+          resolve(info.title ? info : {});
+        } catch {
+          resolve({});
+        }
+      }
+    );
+  });
+}
+
+function nowPlayingSeek(seconds) {
+  return new Promise((resolve, reject) => {
+    execFile(NOWPLAYING_CLI, ["seek", String(seconds)], (err, stdout, stderr) => {
+      if (err) return reject(stderr || err.message);
+      resolve();
+    });
+  });
+}
+
 const SCROLL_STEP_PX = 15;
 const SCROLL_MAX_STEPS = 12;
 
@@ -150,6 +179,10 @@ app.get("/api/apps", async (req, res) => {
   } catch (e) {
     res.status(500).json({ error: String(e) });
   }
+});
+
+app.get("/api/nowplaying", async (req, res) => {
+  res.json(await nowPlaying());
 });
 
 app.get("/api/frontmost", async (req, res) => {
@@ -253,6 +286,10 @@ wss.on("connection", (ws) => {
 
         case "scroll":
           await scroll(msg.dx, msg.dy);
+          break;
+
+        case "seek":
+          await nowPlayingSeek(msg.position);
           break;
 
         default:
